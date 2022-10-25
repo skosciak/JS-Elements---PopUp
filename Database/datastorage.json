@@ -1,0 +1,44 @@
+{
+    "ItemsForSale": [
+        {
+            "ItemID": 1,
+            "ItemName": "Xbox360",
+            "ItemPrice": "1200zł",
+            "ShipTime": "1 dzień",
+            "Stock": "10",
+            "Version": "Standard",
+            "ProductInfo": "Druga konsola Microsoftu zasłynęła za sprawą wydanych na wyłączność serii Gears of War, Halo oraz genialnej symulacji wyścigów – Forza Motorsport. Obecnie biblioteka przeznaczonych nań tytułów jest przeogromna i oprócz produkcji pudełkowych sporo gier znaleźć można również w cyfrowym sklepie Xbox Live. Razem z szeregiem dodatkowych funkcjonalności multimedialnych pokroju wypożyczalni filmów czy transmisji wydarzeń sportowych czyni ona z Xboxa 360 prawdziwe centrum rozrywki. Szkoda tylko, że rodzimy Xbox Live jest większości tych opcji pozbawiony.",
+            "ImageLocation": "x360.png"
+        },
+        {
+            "ItemID": 2,
+            "ItemName": "Playstation 3",
+            "ItemPrice": "1400zł",
+            "ShipTime": "3 dni",
+            "Stock": "1",
+            "Version": "Pro",
+            "ProductInfo": "Ewolucja jaką przeszła trzecia odsłony flagowej konsoli Sony potrafi imponować. Z dużego nieporęcznego, choć nieźle wyglądającego urządzenia w niewielkie czarne, kompaktowe pudełko o całkiem niezłych możliwościach. Nie sposób przecenić tu olbrzymiej bazy gier, która w ciągu ostatnich lat pojawiła się na tę platformę. Playstation 3 może też poszczycić się sporą biblioteką znakomitych tytułów na wyłączność wśród których prym wiodą serię Gran Turismo, Uncharted czy God of War. Znakomita rozrywka dla każdego, niezależnie od wieku!",
+            "ImageLocation": "ps3.png"
+        },
+        {
+            "ItemID": 3,
+            "ItemName": "Tu jest zbyt długa nazwa!!!",
+            "ItemPrice": "1200zł",
+            "ShipTime": "1 dzień",
+            "Stock": "10",
+            "Version": "Standard",
+            "ProductInfo": "Druga konsola Microsoftu zasłynęła za sprawą wydanych na wyłączność serii Gears of War, Halo oraz genialnej symulacji wyścigów – Forza Motorsport. Obecnie biblioteka przeznaczonych nań tytułów jest przeogromna i oprócz produkcji pudełkowych sporo gier znaleźć można również w cyfrowym sklepie Xbox Live. Razem z szeregiem dodatkowych funkcjonalności multimedialnych pokroju wypożyczalni filmów czy transmisji wydarzeń sportowych czyni ona z Xboxa 360 prawdziwe centrum rozrywki. Szkoda tylko, że rodzimy Xbox Live jest większości tych opcji pozbawiony.",
+            "ImageLocation": "x360.png"
+        },
+        {
+            "ItemID": 4,
+            "ItemName": "123",
+            "ItemPrice": "1200zł",
+            "ShipTime": "1 dzień",
+            "Stock": "10",
+            "Version": "Tu jest zbyt długa wersja!!!",
+            "ProductInfo": "Druga konsola Microsoftu zasłynęła za sprawą wydanych na wyłączność serii Gears of War, Halo oraz genialnej symulacji wyścigów – Forza Motorsport. Obecnie biblioteka przeznaczonych nań tytułów jest przeogromna i oprócz produkcji pudełkowych sporo gier znaleźć można również w cyfrowym sklepie Xbox Live. Razem z szeregiem dodatkowych funkcjonalności multimedialnych pokroju wypożyczalni filmów czy transmisji wydarzeń sportowych czyni ona z Xboxa 360 prawdziwe centrum rozrywki. Szkoda tylko, że rodzimy Xbox Live jest większości tych opcji pozbawiony.",
+            "ImageLocation": "x360.png"
+        }
+    ]
+}
