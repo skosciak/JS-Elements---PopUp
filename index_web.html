@@ -44,29 +44,36 @@
     </body>
     <script type = 'text/javascript'>
         //Globalne zmienne użyte w paru funkcjach
-        const GetProductInfoContainer = document.getElementById('ProductInfo-container');
-        const GetContainer = document.getElementById('container-1');
-        const GetMoreButton = document.getElementById('more');
-        const GetBuyButton = document.getElementById('buy');
-        const GetRandomButton = document.getElementById('random');
+        const ProductInfoContainer = document.getElementById('ProductInfo-container');
+        const Container = document.getElementById('container-1');
+        const MoreButton = document.getElementById('more');
+        const BuyButton = document.getElementById('buy');
+        const RandomButton = document.getElementById('random');
         let ProductIDShow = 1;
 
         async function LoadDatabase() {
-            let Database = await fetch('Database/datastorage.json');
-            if (Database != null || Database != undefined) {
-                const Data = await Database.json(); //Ładowanie zawartości bazy danych
-                return Data;
-            }
+            let Database = await fetch('/Database/datastorage.json');
+            if (Database === null || Database === undefined) 
+                return false;
+            const Data = await Database.json(); //Ładowanie zawartości bazy danych
+            return Data;
         };
 
         function init() { //Inicjalizacja wydarzeń na stronie
             document.getElementById('btn-container').addEventListener('click', ShowPopup);
             document.getElementById('random-text').addEventListener('click', ShowPopup);
             document.getElementById('cross').addEventListener('click', ClosePopup);
-            GetMoreButton.addEventListener('click', ContentDisplay);
-            GetRandomButton.addEventListener('click', RandomizeProduct);
+            MoreButton.addEventListener('click', ContentDisplay);
+            RandomButton.addEventListener('click', RandomizeProduct);
             console.log('Loaded Events');
         };
+
+        function ConvertToEM(Element, Attribute, AutoConvertToEM) {
+            if (AutoConvertToEM === true)
+                return Element.getBoundingClientRect().Attribute / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size')) + 'em';
+            else
+                return Element.getBoundingClientRect().Attribute / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'));
+        }
 
         function CheckLenghtF(Array, Length, Element) { //Funkcja do sprawdzania długości stringa. Array - tablica z ilością znaków, Length - maksymalna ilość znaków, Element - w jakim elemencie się mieści lub nie.
             if (Array.length > Length) {
@@ -82,15 +89,21 @@
         };
 
         async function InsertData(){ //Funkcja ładowania danych do okienka
-            let GetPElement = document.getElementsByClassName('TextData')[0];;
-            const GetItemName = document.getElementById('ItemName');
-            const GetImagePlaceholder = document.getElementById('image-placeholder');
-            const GetImage = document.getElementById('image');
-            const GetContainerText = document.getElementById('text-container');
-            const GetCross = document.getElementById('cross');
+            const PElement = {
+                ItemID: document.getElementById('ItemName'),
+                ItemName: document.getElementById('ItemName'),
+                Version: document.getElementById('Version'),
+                ItemPrice: document.getElementById('ItemPrice'),
+                ProductInfo: document.getElementById('ProductInfo')
+            };
+            const ItemName = document.getElementById('ItemName');
+            const ImagePlaceholder = document.getElementById('image-placeholder');
+            const Image = document.getElementById('image');
+            const ContainerText = document.getElementById('text-container');
+            const Cross = document.getElementById('cross');
             const CheckIfDatabaseReturnTrue = await LoadDatabase()
                 .then(result => {
-                    GetPElement.innerHTML = result.ItemsForSale[ProductIDShow].ItemID; //Element nie widoczny, nie używany.
+                    PElement.ItemID.innerHTML = result.ItemsForSale[ProductIDShow].ItemID; //Element nie widoczny, nie używany.
                     if (CheckLenghtF(result.ItemsForSale[ProductIDShow].ItemName.split(''), '15', document.getElementsByClassName('TextData')[1]) === false) { //Sprawdzenie czy nazwa produktu mieści się w ilości znaków jakie można wyświetlić w elemencie. Jeżeli 'true' następuje ustawianie elementu oraz konwersja z 'px' na 'em'        
                         console.warn('Your product name is to long please contact with site administrator!');
                         RandomizeProduct();
@@ -103,24 +116,20 @@
                             return false;
                         }
                         else {
-                            GetPElement = document.getElementsByClassName('TextData')[1];
-                            GetPElement.innerHTML = result.ItemsForSale[ProductIDShow].ItemName;
-                            GetPElement = document.getElementsByClassName('TextData')[2];
-                            GetPElement.innerHTML = result.ItemsForSale[ProductIDShow].Version;
-                            GetContainerText.style.width = '';
-                            GetContainerText.style.width =  (GetItemName.getBoundingClientRect().width / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'))) + 'em';
-                            GetContainer.style.width = '';
-                            GetContainer.style.width =  (GetItemName.getBoundingClientRect().width / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'))) + (GetImagePlaceholder.getBoundingClientRect().width / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'))) + 'em';
-                            GetProductInfoContainer.style.width = (GetItemName.getBoundingClientRect().width / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'))) + 1 + 'em';
-                            GetCross.style.left = (GetContainer.getBoundingClientRect().width / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'))) - 3.4375 + 'em';
-                            GetMoreButton.style.left = (GetProductInfoContainer.getBoundingClientRect().width / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'))) - 2.5 + 'em';
-                            GetPElement = document.getElementsByClassName('TextData')[4];
-                            GetPElement.innerHTML = result.ItemsForSale[ProductIDShow].ItemPrice;
-                            GetPElement = document.getElementsByClassName('TextData')[6];
-                            GetPElement.innerHTML = result.ItemsForSale[ProductIDShow].ProductInfo;
-                            GetImage.setAttribute('src', './' + result.ItemsForSale[ProductIDShow].ImageLocation);
-                            GetRandomButton.style.left = '';
-                            GetRandomButton.style.left = (GetContainer.getBoundingClientRect().width / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'))) + (GetContainer.getBoundingClientRect().left / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'))) - 1.5625 + 'em';
+                            PElement.ItemName.innerHTML = result.ItemsForSale[ProductIDShow].ItemName;
+                            PElement.Version.innerHTML = result.ItemsForSale[ProductIDShow].Version;
+                            ContainerText.style.width = '';
+                            ContainerText.style.width =  ConvertToEM(PElement.ItemName, width, true);
+                            Container.style.width = '';
+                            Container.style.width =  ConvertToEM(PElement.ItemName, width, true) + ConvertToEM(ImagePlaceholder, width, true);
+                            ProductInfoContainer.style.width = ConvertToEM(PElement.ItemName, width, false) + 1 + 'em';
+                            Cross.style.left = ConvertToEM(Container, width, false) - 3.4375 + 'em';
+                            MoreButton.style.left = ConvertToEM(ProductInfoContainer, width, false) - 2.5 + 'em';
+                            PElement.ItemPrice.innerHTML = result.ItemsForSale[ProductIDShow].ItemPrice;
+                            PElement.ProductInfo.innerHTML = result.ItemsForSale[ProductIDShow].ProductInfo;
+                            Image.setAttribute('src', './' + result.ItemsForSale[ProductIDShow].ImageLocation);
+                            RandomButton.style.left = '';
+                            RandomButton.style.left = ConvertToEM(Container, width, false) + ConvertToEM(Container, left, false) - 1.5625 + 'em';
                             return true;
                         };
                     };
@@ -131,6 +140,8 @@
                     ClosePopup();
                     return false;
                 });
+            if (await CheckIfDatabaseReturnTrue === false)
+                window.alert('Wystąpił błąd! Proszę spróbować jeszcze raz za chwilę.')
             return await CheckIfDatabaseReturnTrue;
         };
 
@@ -152,14 +163,9 @@
         async function ShowPopup() { //Wyświetlanie okienka 
             let CheckIfInsertDataTrue;
             let LoopBreak = 0;
-            do {
-                CheckIfInsertDataTrue = await InsertData()
-                    .catch(error => (console.log(error)))
-                    .finally(() => {document.getElementById('popup-container').style.visibility = 'visible'});
-                LoopBreak++;
-                if (LoopBreak == 100)
-                    break;
-            } while (await CheckIfInsertDataTrue === false);
+            CheckIfInsertDataTrue = await InsertData()
+                .catch(error => (console.log(error)))
+                .finally(() => {document.getElementById('popup-container').style.visibility = 'visible'});
             console.log('Showing PopUp' + await CheckIfInsertDataTrue);
         };
 
@@ -169,15 +175,15 @@
         };
 
         function ContentHide() { //Ukrywanie dodatkowych informacji
-            if(GetMoreButton.outerText == 'MNIEJ') { 
-                GetContainer.style.height = '21.875em';
-                GetBuyButton.style.top = '5.125em';
-                GetMoreButton.innerHTML = 'WIĘCEJ';
-                GetMoreButton.style.top = '3.9375em';
-                GetProductInfoContainer.style.height = '5.25em';
+            if(MoreButton.outerText == 'MNIEJ') { 
+                Container.style.height = '21.875em';
+                BuyButton.style.top = '5.125em';
+                MoreButton.innerHTML = 'WIĘCEJ';
+                MoreButton.style.top = '3.9375em';
+                ProductInfoContainer.style.height = '5.25em';
                 console.log('Collapsing ProductInfo');
-                GetMoreButton.removeEventListener('click', ContentHide);
-                GetMoreButton.addEventListener('click', ContentDisplay);
+                MoreButton.removeEventListener('click', ContentHide);
+                MoreButton.addEventListener('click', ContentDisplay);
                 return true;
             }
             else
@@ -185,16 +191,16 @@
         };
 
         function ContentDisplay() { //Wyświetlanie dodatkowych informacji
-            if(GetMoreButton.innerText == 'WIĘCEJ') { 
-                const GetProductInfo = document.getElementById('ProductInfo');
-                GetContainer.style.height = (GetContainer.getBoundingClientRect().height + GetProductInfo.getBoundingClientRect().height - GetProductInfoContainer.getBoundingClientRect().height) / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size')) + 'em';
-                GetBuyButton.style.top = 5.125 + ((GetProductInfo.getBoundingClientRect().height - GetProductInfoContainer.getBoundingClientRect().height) / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'))) + 'em';
-                GetMoreButton.innerHTML = 'MNIEJ';
-                GetMoreButton.style.top = 4.125 + (GetProductInfo.getBoundingClientRect().height - GetProductInfoContainer.getBoundingClientRect().height) / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size')) + 'em';
-                GetProductInfoContainer.style.height = GetProductInfo.getBoundingClientRect().height / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size')) + 'em';
+            if(MoreButton.innerText == 'WIĘCEJ') { 
+                const ProductInfo = document.getElementById('ProductInfo');
+                Container.style.height = (Container.getBoundingClientRect().height + ProductInfo.getBoundingClientRect().height - ConvertToEM(ProductInfoContainer, height, false)) + 'em';
+                BuyButton.style.top = 5.125 + (ProductInfo.getBoundingClientRect().height - ConvertToEM(ProductInfoContainer, height, false)) + 'em';
+                MoreButton.innerHTML = 'MNIEJ';
+                MoreButton.style.top = 4.125 + (ProductInfo.getBoundingClientRect().height - ConvertToEM(ProductInfoContainer, height, false)) + 'em';
+                ProductInfoContainer.style.height = ConvertToEM(ProductInfoContainer, height, true);
                 console.log('Showing ProductInfo');
-                GetMoreButton.removeEventListener('click', ContentDisplay);
-                GetMoreButton.addEventListener('click', ContentHide);
+                MoreButton.removeEventListener('click', ContentDisplay);
+                MoreButton.addEventListener('click', ContentHide);
                 return true;
             }
             else
