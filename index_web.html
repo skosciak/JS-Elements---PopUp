@@ -52,7 +52,7 @@
         let ProductIDShow = 1;
 
         async function LoadDatabase() {
-            let Database = await fetch('/Database/datastorage.json');
+            let Database = await fetch('./Database/datastorage.json');
             if (Database === null || Database === undefined) 
                 return false;
             const Data = await Database.json(); //Ładowanie zawartości bazy danych
@@ -69,11 +69,38 @@
         };
 
         function ConvertToEM(Element, Attribute, AutoConvertToEM) {
-            if (AutoConvertToEM === true)
-                return Element.getBoundingClientRect().Attribute / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size')) + 'em';
-            else
-                return Element.getBoundingClientRect().Attribute / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size'));
-        }
+            switch (Attribute){
+                case "width":
+                    Element = Element.getBoundingClientRect().width;
+                    break;
+
+                case "height":
+                    Element = Element.getBoundingClientRect().height;
+                    break;
+
+                case "top":
+                    Element = Element.getBoundingClientRect().top;
+                    break;
+
+                case "left":
+                    Element = Element.getBoundingClientRect().left;
+                    break;
+
+                case "bottom":
+                    Element = Element.getBoundingClientRect().bottom;
+                    break;
+
+                case "right":
+                    Element = Element.getBoundingClientRect().right;
+                    break;
+            };
+            if (AutoConvertToEM === true) {
+                return (Element / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size')) + 'em');
+            }
+            else {
+                return (Element / parseInt(window.getComputedStyle(document.querySelector('html')).getPropertyValue('font-size')));
+            };
+        };
 
         function CheckLenghtF(Array, Length, Element) { //Funkcja do sprawdzania długości stringa. Array - tablica z ilością znaków, Length - maksymalna ilość znaków, Element - w jakim elemencie się mieści lub nie.
             if (Array.length > Length) {
@@ -85,12 +112,12 @@
                 Array.join('');
                 console.log('Text in ' + Element.id + ' in range');
                 return true;
-            }
+            };
         };
 
         async function InsertData(){ //Funkcja ładowania danych do okienka
             const PElement = {
-                ItemID: document.getElementById('ItemName'),
+                ItemID: document.getElementById('ItemID'),
                 ItemName: document.getElementById('ItemName'),
                 Version: document.getElementById('Version'),
                 ItemPrice: document.getElementById('ItemPrice'),
@@ -119,17 +146,17 @@
                             PElement.ItemName.innerHTML = result.ItemsForSale[ProductIDShow].ItemName;
                             PElement.Version.innerHTML = result.ItemsForSale[ProductIDShow].Version;
                             ContainerText.style.width = '';
-                            ContainerText.style.width =  ConvertToEM(PElement.ItemName, width, true);
+                            ContainerText.style.width =  ConvertToEM(PElement.ItemName, "width", true);
                             Container.style.width = '';
-                            Container.style.width =  ConvertToEM(PElement.ItemName, width, true) + ConvertToEM(ImagePlaceholder, width, true);
-                            ProductInfoContainer.style.width = ConvertToEM(PElement.ItemName, width, false) + 1 + 'em';
-                            Cross.style.left = ConvertToEM(Container, width, false) - 3.4375 + 'em';
-                            MoreButton.style.left = ConvertToEM(ProductInfoContainer, width, false) - 2.5 + 'em';
+                            Container.style.width =  (ConvertToEM(PElement.ItemName, "width", false) + ConvertToEM(ImagePlaceholder, "width", false) + 'em');
+                            ProductInfoContainer.style.width = ConvertToEM(PElement.ItemName, "width", false) + 1 + 'em';
+                            Cross.style.left = ConvertToEM(Container, "width", false) - 3.4375 + 'em';
+                            MoreButton.style.left = ConvertToEM(ProductInfoContainer, "width", false) - 2.5 + 'em';
                             PElement.ItemPrice.innerHTML = result.ItemsForSale[ProductIDShow].ItemPrice;
                             PElement.ProductInfo.innerHTML = result.ItemsForSale[ProductIDShow].ProductInfo;
                             Image.setAttribute('src', './' + result.ItemsForSale[ProductIDShow].ImageLocation);
                             RandomButton.style.left = '';
-                            RandomButton.style.left = ConvertToEM(Container, width, false) + ConvertToEM(Container, left, false) - 1.5625 + 'em';
+                            RandomButton.style.left = ConvertToEM(Container, "width", false) + ConvertToEM(Container, "left", false) - 1.5625 + 'em';
                             return true;
                         };
                     };
@@ -147,9 +174,11 @@
 
         async function RandomizeProduct(){ //Funkcja losująca produkt spośród pliku JSON
             LoadDatabase().then(result => {
+                ContentHide();
                 const DatabaseStoredProducts = result.ItemsForSale.length;
                 ProductIDShow = Math.floor(Math.random() * (DatabaseStoredProducts));
-                console.log("Randomized product with ID: " + ProductIDShow);
+                console.log("Randomized product with ID: " + (ProductIDShow + 1));
+                InsertData();
                 return true;
             })
             .catch(error => {
@@ -175,36 +204,26 @@
         };
 
         function ContentHide() { //Ukrywanie dodatkowych informacji
-            if(MoreButton.outerText == 'MNIEJ') { 
-                Container.style.height = '21.875em';
-                BuyButton.style.top = '5.125em';
-                MoreButton.innerHTML = 'WIĘCEJ';
-                MoreButton.style.top = '3.9375em';
-                ProductInfoContainer.style.height = '5.25em';
-                console.log('Collapsing ProductInfo');
-                MoreButton.removeEventListener('click', ContentHide);
-                MoreButton.addEventListener('click', ContentDisplay);
-                return true;
-            }
-            else
-                return false;
+            Container.style.height = '21.875em';
+            BuyButton.style.top = '5.125em';
+            MoreButton.innerHTML = 'WIĘCEJ';
+            MoreButton.style.top = '3.9375em';
+            ProductInfoContainer.style.height = '5.25em';
+            console.log('Collapsing ProductInfo');
+            MoreButton.removeEventListener('click', ContentHide);
+            MoreButton.addEventListener('click', ContentDisplay);
         };
 
         function ContentDisplay() { //Wyświetlanie dodatkowych informacji
-            if(MoreButton.innerText == 'WIĘCEJ') { 
-                const ProductInfo = document.getElementById('ProductInfo');
-                Container.style.height = (Container.getBoundingClientRect().height + ProductInfo.getBoundingClientRect().height - ConvertToEM(ProductInfoContainer, height, false)) + 'em';
-                BuyButton.style.top = 5.125 + (ProductInfo.getBoundingClientRect().height - ConvertToEM(ProductInfoContainer, height, false)) + 'em';
-                MoreButton.innerHTML = 'MNIEJ';
-                MoreButton.style.top = 4.125 + (ProductInfo.getBoundingClientRect().height - ConvertToEM(ProductInfoContainer, height, false)) + 'em';
-                ProductInfoContainer.style.height = ConvertToEM(ProductInfoContainer, height, true);
-                console.log('Showing ProductInfo');
-                MoreButton.removeEventListener('click', ContentDisplay);
-                MoreButton.addEventListener('click', ContentHide);
-                return true;
-            }
-            else
-                return false;
+            const ProductInfo = document.getElementById('ProductInfo');
+            Container.style.height = (ConvertToEM(Container, "height", false) + ConvertToEM(ProductInfo, "height", false) - ConvertToEM(ProductInfoContainer, "height", false)) + 'em';
+            BuyButton.style.top = 5.125 + (ConvertToEM(ProductInfo, "height", false) - ConvertToEM(ProductInfoContainer, "height", false)) + 'em';
+            MoreButton.innerHTML = 'MNIEJ';
+            MoreButton.style.top = 4.125 + (ConvertToEM(ProductInfo, "height", false) - ConvertToEM(ProductInfoContainer, "height", false)) + 'em';
+            ProductInfoContainer.style.height = ConvertToEM(ProductInfo, "height", true);
+            console.log('Showing ProductInfo');
+            MoreButton.removeEventListener('click', ContentDisplay);
+            MoreButton.addEventListener('click', ContentHide);
         };
 
         document.addEventListener('DOMContentLoaded', init);
